@@ -5,26 +5,21 @@
 #ifndef HI_SQUARE_H
 #define HI_SQUARE_H
 #include <SDL2/SDL_rect.h>
-
+#include <SDL2/SDL_render.h>
 
 class square {
+private:
+    int x, y, w, h;
+    float dir;
 public:
-    float x;
-    float y;
-    int w;
-    int h;
-    SDL_surface * renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    square(float givenx, float giveny, int givenw, int givenh)
-    {
-        x = givenx;
-        y = giveny;
-        w = givenw;
-        h = givenh;
-    }
-    void draw() {
-        SDL_Rect myrect = {x, y, w, h};
-        SDL_RenderFillRect(renderer, &myRect);
-    }
+    //SDL_Surface * renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    square(int givenx, int giveny, int givenw, int givenh, float dirgiven);
+    void draw(SDL_Renderer* renderer) const;
+
+    void move( float takendir, int takenspeed, float deltatime) ;
+
+
+
 };
 
 

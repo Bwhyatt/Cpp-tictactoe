@@ -9,7 +9,9 @@ set(SDL2_INCLUDE_DIR "${SDL2_PATH}/include")
 set(SDL2_LIBRARY "${SDL2_PATH}/lib/libSDL2.dll.a")
 set(SDL2_MAIN_LIBRARY "${SDL2_PATH}/lib/libSDL2main.a")
 
-add_executable(hi hi.cpp)
+add_executable(hi hi.cpp
+        square.cpp
+        square.h)
 
 target_include_directories(hi PRIVATE ${SDL2_INCLUDE_DIR})
 target_link_libraries(hi PRIVATE -lmingw32 ${SDL2_MAIN_LIBRARY} ${SDL2_LIBRARY})

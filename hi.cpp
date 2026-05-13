@@ -1,6 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-
+#include "square.h"
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -22,7 +22,8 @@ int main(int argc, char* argv[]) {
     float dir = 1;
     Uint32 last_time = 0, current_time = 0;
     float delta_time = 0;
-    float speed = 1000.0f;
+    int speed = 1000.0f;
+    square obj(100, 100, 100, 100, 1);
     while (running) {
         current_time = SDL_GetTicks();
         // delta_time in seconds
@@ -34,17 +35,20 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_QUIT) running = false;
             if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) running = false;
         }
-        if (myRect.x + myRect.w > SDL_GetWindowSurface(window)->w || myRect.x < 0) dir *= -1;
-        myRect.x += static_cast<int>(dir * delta_time * speed);
+        //if (myRect.x + myRect.w > SDL_GetWindowSurface(window)->w || myRect.x < 0) dir *= -1;
+        //myRect.x += static_cast<int>( delta_time* dir) * speed ;
         std::cout << myRect.x << std::endl;
+
         // clear screen (dark blue)
         SDL_SetRenderDrawColor(renderer, 20, 20, 40, 255);
         SDL_RenderClear(renderer);
-
+        //draw my obj
+        obj.move(dir, speed, delta_time);
+        obj.draw(renderer);
 
         // draw stuff here later...
-        SDL_SetRenderDrawColor(renderer, 100, 20, 40, 255);
-        SDL_RenderFillRect(renderer, &myRect);
+        // SDL_SetRenderDrawColor(renderer, 100, 20, 40, 255);
+        // SDL_RenderFillRect(renderer, &myRect);
         SDL_RenderPresent(renderer);
     }
 
