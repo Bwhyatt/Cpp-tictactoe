@@ -9,16 +9,18 @@
 
 class square {
 private:
+
+public:
     int x, y, w, h;
     float dir;
-public:
+    float speed;
     //SDL_Surface * renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    square(int givenx, int giveny, int givenw, int givenh, float dirgiven);
+    square(int givenx, int giveny, int givenw, int givenh, float dirgiven, float speedgiven);
     void draw(SDL_Renderer* renderer) const;
 
-    void move( float takendir, int takenspeed, float deltatime) ;
-
-
+    void move( float takendir, float takenspeed, float deltatime) ;
+    bool Collision( square square2) const;
+    bool HitWall(SDL_Window* window) const;
 
 };
 
