@@ -12,15 +12,15 @@ private:
 
 public:
     int x, y, w, h;
-    float dir;
-    float speed;
+    float dirx, diry;
+    float speedx, speedy;
     //SDL_Surface * renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    square(int givenx, int giveny, int givenw, int givenh, float dirgiven, float speedgiven);
+    square(int givenx, int giveny, int givenw, int givenh, float dirxgiven, float speedgiven, float speedygiven, float dirygiven);
     void draw(SDL_Renderer* renderer) const;
 
-    void move( float takendir, float takenspeed, float deltatime) ;
-    bool Collision( square square2) const;
-    bool HitWall(SDL_Window* window) const;
+    void move( float takendir, float takendiry, float takenspeed, float takenspeedy, float deltatime) ;
+    int Collision( square square2) const;
+    int HitWall(SDL_Window* window) const;
 
 };
 

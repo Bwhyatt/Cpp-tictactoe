@@ -24,9 +24,9 @@ int main(int argc, char* argv[]) {
     Uint32 last_time = 0, current_time = 0;
     float delta_time = 0;
     int speed = 1000.0f;
-    square obj(100, 100, 100, 100, 1, 200);
-    square obj2(500, 100, 100, 100, -1, 200);
-    std::vector<square> myVec = {&obj, &obj2};
+    square obj(500, 100, 100, 100, 1, 200, 200, 1);
+    square obj2(100, 50, 100, 100, 1, 200, 200, 1);
+    std::vector<square*> myVec = {&obj, &obj2};
     while (running) {
         current_time = SDL_GetTicks();
         // delta_time in seconds
@@ -45,22 +45,31 @@ int main(int argc, char* argv[]) {
         SDL_SetRenderDrawColor(renderer, 20, 20, 40, 255);
         SDL_RenderClear(renderer);
         //draw my obj
-        if (obj.Collision(obj2)) {
-            obj.dir *= -1.0;
-            obj2.dir *= -1.0;
-            std::cout << "Collision" <<std::endl;
+        if (obj.Collision(obj2) == -1) {
+            obj.dirx *= -1.0;
+            obj2.dirx *= -1.0;
+            std::cout << "Collision x" <<std::endl;
         }
+       /* if (obj.Collision(obj2) == 1) {
+            obj.diry *= -1.0;
+            obj2.diry *= -1.0;
+            std::cout << "Collision y" <<std::endl;
+        }*/
 
         for (int i = 0; i < myVec.size(); i++) {
-                if (myVec[i].HitWall(window)) {
-                 myVec[i].x = obj.dir > 0 ? SDL_GetWindowSurface(window)->w -myVec[i].w - 1 : 1;
-                myVec[i].dir *= -1.0;
-                std::cout << "JFSJEIIESIKFS" << std::endl;
+            if (myVec[i]->HitWall(window) == -1) {
+                myVec[i]->x = myVec[i]->dirx > 0 ? SDL_GetWindowSurface(window)->w -myVec[i]->w - 1 : 1;
+                myVec[i]->dirx *= -1.0;
+                std::cout << "Wall hit at x position" << myVec[i] ->x << std::endl;
+            }
+            if (myVec[i]->HitWall(window) == 1) {
+                myVec[i]->y = myVec[i]->diry > 0 ? SDL_GetWindowSurface(window)->h -myVec[i]->h - 1 : 1;
+                myVec[i]->diry *= -1.0;
+                std::cout << "Wall hit at y position" << myVec[i] ->y << std::endl;
             }
         }
-        std::cout << obj2.dir<< std::endl;
-        obj.move(obj.dir, obj.speed, delta_time);
-        obj2.move(obj2.dir, obj2.speed, delta_time);
+        obj.move(obj.dirx,obj.diry, obj.speedx,obj.speedy, delta_time);
+        obj2.move(obj2.dirx,obj2.diry, obj2.speedx, obj2.speedy, delta_time);
         obj.draw(renderer);
         SDL_SetRenderDrawColor(renderer, 200, 20, 40, 255);
         obj2.draw(renderer);
