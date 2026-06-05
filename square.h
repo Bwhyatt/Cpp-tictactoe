@@ -13,13 +13,19 @@ private:
 public:
     int x, y, w, h;
     float dirx, diry;
-    float speedx, speedy;
+    float force;
+    float mass;
+    SDL_Color color;
+    float velx, vely;
+    bool IsColliding;
     //SDL_Surface * renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    square(int givenx, int giveny, int givenw, int givenh, float dirxgiven, float speedgiven, float speedygiven, float dirygiven);
+    square(int givenx, int giveny, int givenw, int givenh, float dirxgiven,
+    float speedgiven, float speedygiven, float dirygiven, float mass, SDL_Color colorgiven);
     void draw(SDL_Renderer* renderer) const;
 
     void move( float takendir, float takendiry, float takenspeed, float takenspeedy, float deltatime) ;
-    int Collision( square square2) const;
+    int CollisionX( square square2) const;
+    int CollisionY( square square2) const;
     int HitWall(SDL_Window* window) const;
 
 };

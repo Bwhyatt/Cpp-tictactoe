@@ -24,9 +24,11 @@ int main(int argc, char* argv[]) {
     Uint32 last_time = 0, current_time = 0;
     float delta_time = 0;
     int speed = 1000.0f;
-    square obj(500, 100, 100, 100, 1, 200, 200, 1);
-    square obj2(100, 50, 100, 100, 1, 200, 200, 1);
+    square obj(400, 400, 100, 100, -1, 200, 00, 1,   SDL_Color(100, 100, 100, 0));
+    square obj2(100, 400, 100, 100, 1, 400, 00, 1, SDL_Color(100, 200, 100, 0));
     std::vector<square*> myVec = {&obj, &obj2};
+    bool flag = false;
+    int Xcol; //return value of x collision
     while (running) {
         current_time = SDL_GetTicks();
         // delta_time in seconds
@@ -45,17 +47,25 @@ int main(int argc, char* argv[]) {
         SDL_SetRenderDrawColor(renderer, 20, 20, 40, 255);
         SDL_RenderClear(renderer);
         //draw my obj
-        if (obj.Collision(obj2) == -1) {
+        int ReturncolX = obj.CollisionX(obj2);
+        int returncolY = obj.CollisionY(obj2);
+        //std::cout << (abs(obj2.x - obj.x) < obj.w ?  "should be colliding" : "Not colliding" )<< std::endl;
+        if ( returncolY != 0) {
+            //std::cout << "Collision y" <<std::endl;
+        }
+        if (ReturncolX != 0 ) {
+           // std::cout << "Collision x" <<std::endl;
+        }
+        /*if (ReturncolX != 0 ) {
             obj.dirx *= -1.0;
             obj2.dirx *= -1.0;
             std::cout << "Collision x" <<std::endl;
         }
-       /* if (obj.Collision(obj2) == 1) {
+        if ( returncolY != 0) {
             obj.diry *= -1.0;
             obj2.diry *= -1.0;
             std::cout << "Collision y" <<std::endl;
         }*/
-
         for (int i = 0; i < myVec.size(); i++) {
             if (myVec[i]->HitWall(window) == -1) {
                 myVec[i]->x = myVec[i]->dirx > 0 ? SDL_GetWindowSurface(window)->w -myVec[i]->w - 1 : 1;
@@ -67,11 +77,27 @@ int main(int argc, char* argv[]) {
                 myVec[i]->diry *= -1.0;
                 std::cout << "Wall hit at y position" << myVec[i] ->y << std::endl;
             }
+            for (int j = 0; j < myVec.size(); j++) {
+                 Xcol = myVec[i]->CollisionX(*myVec[j]);
+                if (Xcol && i != j)
+                {
+                    if (abs(myVec[i]->x - myVec[j]->x) > abs(myVec[i]->y - myVec[j]->y)) {
+                        //problem is directions keep getting changed
+                        myVec[j]->velx =0;
+                        myVec[i]->dirx *= -1.0;
+                        if (Xcol == -1) {
+                        }
+                    }
+
+                    std::cout << "difference in x " << abs(myVec[i]->x - myVec[j]->x) << "difference in y" <<  abs(myVec[i]->y - myVec[j]->y) <<std::endl;
+                }
+            }
         }
-        obj.move(obj.dirx,obj.diry, obj.speedx,obj.speedy, delta_time);
-        obj2.move(obj2.dirx,obj2.diry, obj2.speedx, obj2.speedy, delta_time);
-        obj.draw(renderer);
+        obj.move(obj.dirx,obj.diry, obj.velx,obj.vely, delta_time);
+        obj2.move(obj2.dirx,obj2.diry, obj2.velx, obj2.vely, delta_time);
         SDL_SetRenderDrawColor(renderer, 200, 20, 40, 255);
+        obj.draw(renderer);
+        SDL_SetRenderDrawColor(renderer, 200, 200, 40, 255);
         obj2.draw(renderer);
         SDL_RenderPresent(renderer);
     }
