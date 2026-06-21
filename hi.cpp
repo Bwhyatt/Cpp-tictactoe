@@ -1,4 +1,5 @@
 #include <iostream>
+#include <list>
 #include <SDL2/SDL.h>
 #include "square.h"
 #include <vector>
@@ -24,17 +25,18 @@ int main(int argc, char* argv[]) {
     Uint32 last_time = 0, current_time = 0;
     float delta_time = 0;
     int speed = 1000.0f;
-    square obj(400, 400, 100, 100, -1, 200, 00, 1,   SDL_Color(100, 100, 100, 0));
-    square obj2(100, 400, 100, 100, 1, 400, 00, 1, SDL_Color(100, 200, 100, 0));
+    square obj(1, 500, 400, 100, 100, -1, 300, 00, 1, 100,  SDL_Color(255, 100, 100, 0));
+    square obj2(2, 100, 400, 100, 100, 1, 100, 00, 1,100, SDL_Color(100, 200, 100, 0));
     std::vector<square*> myVec = {&obj, &obj2};
     bool flag = false;
-    int Xcol; //return value of x collision
+    //return value of x collision
+    std::list<int> listt1 = {0, 1, 2};
     while (running) {
         current_time = SDL_GetTicks();
         // delta_time in seconds
         delta_time = static_cast<float>(current_time - last_time)/1000.0f;
         last_time = current_time;
-
+        myVec = {&obj, &obj2};
         // handle events
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = false;
@@ -68,25 +70,41 @@ int main(int argc, char* argv[]) {
         }*/
         for (int i = 0; i < myVec.size(); i++) {
             if (myVec[i]->HitWall(window) == -1) {
-                myVec[i]->x = myVec[i]->dirx > 0 ? SDL_GetWindowSurface(window)->w -myVec[i]->w - 1 : 1;
+                myVec[i]->x = myVec[i]->x + myVec[i]->w>= SDL_GetWindowSurface(window)->w  ? SDL_GetWindowSurface(window)->w -myVec[i]->w - 1 : 1;
+                //need to handle logic if it's colliding with something
                 myVec[i]->dirx *= -1.0;
-                std::cout << "Wall hit at x position" << myVec[i] ->x << std::endl;
             }
-            if (myVec[i]->HitWall(window) == 1) {
+            /*if (myVec[i]->HitWall(window) == 1) {
                 myVec[i]->y = myVec[i]->diry > 0 ? SDL_GetWindowSurface(window)->h -myVec[i]->h - 1 : 1;
                 myVec[i]->diry *= -1.0;
                 std::cout << "Wall hit at y position" << myVec[i] ->y << std::endl;
-            }
-            for (int j = 0; j < myVec.size(); j++) {
-                 Xcol = myVec[i]->CollisionX(*myVec[j]);
-                if (Xcol && i != j)
+            }*/
+
+
+            for (int j = 0; j < myVec.size(); j++) {//std::cout << "My vec 0 lastobj is " << myVec[0]->Lastobj << "myvec j id is " << myVec[1]->id<< std::endl;
+                 int Xcol = myVec[i]->CollisionX(*myVec[j]);
+                if (Xcol != 0 && i != j && myVec[i]->Lastobj != myVec[j]->id)
                 {
                     if (abs(myVec[i]->x - myVec[j]->x) > abs(myVec[i]->y - myVec[j]->y)) {
                         //problem is directions keep getting changed
-                        myVec[j]->velx =0;
-                        myVec[i]->dirx *= -1.0;
-                        if (Xcol == -1) {
+
+                        auto result = myVec[i]->CalculateLinearMomentumX(myVec[j]->velx, myVec[j]->mass, myVec[i]->dirx);
+
+                        myVec[i]->velx = result[1];
+                        myVec[i]->dirx = result[1] < 0 ? -1:1;
+                        myVec[j]->velx = result[0];
+                        myVec[j]->dirx = result[0] < 0 ? -1:1;
+                        if (myVec[i]-> x > myVec[j]->x) {
+                            myVec[i]->x = myVec[j]->x + myVec[j]->w;
+
                         }
+                        if (myVec[i]->x < myVec[j]->x) {
+                            myVec[j]->x = myVec[i]->x + myVec[i]->w;
+                        }
+                        std::cout << "myVec[i] velx is" << myVec[i]->velx * myVec[i]->dirx<< std::endl;
+                        std::cout << "myVec[j] velx is" << myVec[j]->velx * myVec[j]->dirx<< std::endl;
+                        std::erase(myVec, myVec[1]); //this will not work in future
+
                     }
 
                     std::cout << "difference in x " << abs(myVec[i]->x - myVec[j]->x) << "difference in y" <<  abs(myVec[i]->y - myVec[j]->y) <<std::endl;
