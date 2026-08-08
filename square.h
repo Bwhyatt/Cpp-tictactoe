@@ -4,37 +4,53 @@
 
 #ifndef HI_SQUARE_H
 #define HI_SQUARE_H
-#include <vector>
-#include <SDL2/SDL_render.h>
+
 #include <array>
+#include <vector>
+#include <SDL2/SDL.h>
+#include "Vec2.h"
 
 class square {
 private:
 
 public:
-    int x, y, w, h;
-    float dirx, diry;
-    float force;
+    Vec2 position;
+    Vec2 size;
+    Vec2 velocity;
+    Vec2 force;
+    Vec2 momentum;
+
     float mass;
     SDL_Color color;
-    float velx, vely;
 
-    float momentumx, momentumy;
     int Lastobj = -1;
     int id;
-    //SDL_Surface * renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    square(int id, int givenx, int giveny, int givenw, int givenh, float dirxgiven,
-    float speedgiven, float speedygiven, float dirygiven, float mass, SDL_Color colorgiven);
+
+    square(
+        int id,
+        Vec2 givenPosition,
+        Vec2 givenSize,
+        Vec2 givenVelocity,
+        float mass,
+        SDL_Color colorgiven
+    );
+
     void draw(SDL_Renderer* renderer) const;
-    auto CalculateLinearMomentumX(float u2, float m2, float dir2) -> std::array<float, 2>;
-    void move( float takendir, float takendiry, float takenspeed, float takenspeedy, float deltatime) ;
-    int CollisionX( square square2) ;
-    int CollisionY( square square2) const;
-    static int FnetX(const std::vector<std::array<float, 3>>& v) ;
+
+    auto CalculateLinearMomentumX(
+        const Vec2& velocity2,
+        float mass2
+    ) -> std::array<Vec2, 2>;
+
+    void move(float deltatime);
+
+    int CollisionX(square& square2);
+
+    int CollisionY(const square& square2) const;
+
+    static Vec2 Fnet(const std::vector<Vec2>& forces);
+
     int HitWall(SDL_Window* window) const;
-
 };
-
-
 
 #endif //HI_SQUARE_H

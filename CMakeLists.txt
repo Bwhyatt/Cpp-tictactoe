@@ -11,7 +11,8 @@ set(SDL2_MAIN_LIBRARY "${SDL2_PATH}/lib/libSDL2main.a")
 
 add_executable(hi hi.cpp
         square.cpp
-        square.h)
+        square.h
+        Vec2.h)
 
 target_include_directories(hi PRIVATE ${SDL2_INCLUDE_DIR})
 target_link_libraries(hi PRIVATE -lmingw32 ${SDL2_MAIN_LIBRARY} ${SDL2_LIBRARY})
